@@ -44,13 +44,23 @@ input_loc = 1;
 output_loc = [5,10]; %we get X1 from block 5 and X2 from block 10
 
 sys=connect(BlockMat,connect_map,input_loc,output_loc);
-
+% Define a transfer function
+tf_sys = tf(sys);
+% Extract the numerator and denominator coefficients
+[num, den] = tfdata(tf_sys,'v');
+disp('Numerator Coefficients:');
+disp(num);
+disp('Denominator Coefficients:');
+disp(den);  
 % we need to check the stability of the system before we can proceed to set the option of RiseTimeLimits
 % because if the system is unstable, we will not proceed to get the T.R
 % if z >1 overdamped system so we won't set the option of RiseTimeLimits but if 0< z <1 underdamped system so we will set the option of RiseTimeLimits
-p = stepplot(sys);
-setoptions(p,'RiseTimeLimits' ,[0,1]);
 
+figure(1)
+p = stepplot(sys);
+
+setoptions(p,'RiseTimeLimits' ,[0,1]);
+figure(2)
 pzmap(sys);
 
 [wn,z]=damp(sys);
