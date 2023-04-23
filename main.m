@@ -46,15 +46,16 @@ output_loc = [5,10]; %we get X1 from block 5 and X2 from block 10
 sys=connect(BlockMat,connect_map,input_loc,output_loc);
 % Define a transfer function
 tf_sys = tf(sys);
-disp('Transfer Function:');
-disp(tf_sys);
+% disp('Transfer Function2:');
+% disp(tf_sys(1));
 % Extract the numerator and denominator coefficients
-[num, den] = tfdata(tf_sys,'v');
+[num1, den1] = tfdata(tf_sys(1),'v');
+[num2, den2] = tfdata(tf_sys(2),'v');
 
-% disp('Numerator Coefficients:');
-% disp(num);
-% disp('Denominator Coefficients:');
-% disp(den);  
+disp('Numerator Coefficients:');
+disp(num1);
+disp('Denominator Coefficients:');
+disp(den1);  
 % we need to check the stability of the system before we can proceed to set the option of RiseTimeLimits
 % because if the system is unstable, we will not proceed to get the T.R
 % if z >1 overdamped system so we won't set the option of RiseTimeLimits but if 0< z <1 underdamped system so we will set the option of RiseTimeLimits
@@ -71,21 +72,24 @@ p = stepplot(sys);
 setoptions(p,'RiseTimeLimits' ,[0,1]);
 % TODO: Compute the steady state values of the signals X1,X2
 
+% [wn,z]=damp(sys(1));
+% disp('Natural Frequency:');
+% disp(wn);
+% disp('Damping Ratio:');
+% disp(z);
 
-
-[wn,z]=damp(sys);
 
 % Req 5: in report
 
 % Req 6:Simulate the system for a desired level (Xd) of 2 m. showing the response of X2. 
 H = tf(1,1);
-modification=feedback(tf_sys,H);
-
+modif = feedback(tf(num2,den2),H,-1);
 opt = RespConfig;
 opt.Amplitude = 2;
-step(modification,opt);
 
+figure(3)
+step(modif,opt);
 
-
-
+% Req7 : For the response of X2 calculate the value of 
+% the rise time, peak time, max peak, and settling time. Also calculate the value of ess. 
 
