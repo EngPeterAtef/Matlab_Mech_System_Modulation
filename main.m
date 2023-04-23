@@ -46,26 +46,44 @@ output_loc = [5,10]; %we get X1 from block 5 and X2 from block 10
 sys=connect(BlockMat,connect_map,input_loc,output_loc);
 % Define a transfer function
 tf_sys = tf(sys);
+disp('Transfer Function:');
+disp(tf_sys);
 % Extract the numerator and denominator coefficients
 [num, den] = tfdata(tf_sys,'v');
-disp('Numerator Coefficients:');
-disp(num);
-disp('Denominator Coefficients:');
-disp(den);  
+
+% disp('Numerator Coefficients:');
+% disp(num);
+% disp('Denominator Coefficients:');
+% disp(den);  
 % we need to check the stability of the system before we can proceed to set the option of RiseTimeLimits
 % because if the system is unstable, we will not proceed to get the T.R
 % if z >1 overdamped system so we won't set the option of RiseTimeLimits but if 0< z <1 underdamped system so we will set the option of RiseTimeLimits
 
+% Req 3:For any of the two transfer functions (i.e. X1/U) study the stability of the system. 
 figure(1)
-p = stepplot(sys);
-
-setoptions(p,'RiseTimeLimits' ,[0,1]);
-figure(2)
 pzmap(sys);
+
+% Req 4: If a fixed input force of 1N is applied to the system. Simulate the system under this value of 
+% input force showing the response of X1, X2 also from the resulting responses calculate the steady 
+% state values of these signals. 
+figure(2)
+p = stepplot(sys);
+setoptions(p,'RiseTimeLimits' ,[0,1]);
+% TODO: Compute the steady state values of the signals X1,X2
+
+
 
 [wn,z]=damp(sys);
 
-disp([wn,z]);
+% Req 5: in report
+
+% Req 6:Simulate the system for a desired level (Xd) of 2 m. showing the response of X2. 
+H = tf(1,1);
+modification=feedback(tf_sys,H);
+
+opt = RespConfig;
+opt.Amplitude = 2;
+step(modification,opt);
 
 
 
